@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="image/png" href="../../assets/icons/favicon.png"/>
+  <link rel="stylesheet" href="./admin.css">
+  <title>Shelter</title>
+</head>
+<body>
+  <header class="main-header">
+      <div class="wrapper">
+        <div class="header-container">
+          <div class="logo">
+            <p class="header-title"><a href="../main/index.html">Cozy House</a></p>
+            <p class="header-subtitle"><a href="../main/index.html">Shelter for pets in Boston</a></p>
+          </div>
+          <button class="btn add-btn">Add pet</button>
+          <a href="../main/index.html">
+          <button class="btn logout-btn">Logout
+            </button></a>
+        </div>
+      </div>
+  </header>
+  <main>
+    <section class="friends">
+      <div class="wrapper">
+        <div class="friends-container">
+
+          <div class="filter-container">
+            <div class="filter-container-elements">
+              <div class="filter-wrapper">
+                <div class="filter-block">
+                  <span class="filter-name">
+                    Type of pet
+                    <i class="filter-arrow"></i>
+                  </span>
+                </div>
+                <ul class="filter-list list-type"></ul>
+              </div>
+              <div class="filter-wrapper">
+                <div class="filter-block">
+                  <span class="filter-name">
+                    Breed
+                    <i class="filter-arrow"></i>
+                  </span>
+                </div>
+                <div class="filter-list list-breed"></div>
+              </div>
+            </div>
+
+            <div class="filter-container-results">
+              <button class="btn-reset">Reset filter</button>
+              <div class="current-filter-block"></div>
+            </div>
+          </div>
+
+          <div class="pet-status">
+            <span class="pet-collection active-collection active-status">Active</span>
+            <span>/</span>
+            <span class="pet-collection inactive-collection">Inactive</span>
+          </div>
+
+          <div class="friends-list"></div>
+          <div class="friens-list inactive-list"></div>
+          <div class="friends-pages">
+            <h4 class="start-page circle impossible">&lt;&lt;</h4>
+            <h4 class="previous-page circle impossible">&lt;</h4>
+            <h4 class="current-page active-page circle">1</h4>
+            <h4 class="next-page circle">&gt;</h4>
+            <h4 class="end-page circle">&gt;&gt;</h4>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="pets-popap">
+    <div class="popap-window">
+      <div class="pets-card">
+        <div class="img-container">
+          <img class="popap-img" src="" alt="pets pfoto">
+        </div>
+        <div class="card-info">
+          <h3 class="pets-name"></h3>
+          <h4 class="pets-breed"></h4>
+          <p class="pets-description"></p>
+          <ul class="pets-feature">
+            <li class="pets-item"><span class="pets-item-title">Age: </span><span class="popap-age">2 months</span></li>
+            <li class="pets-item"><span class="pets-item-title">Inoculations: </span><span class="popap-inoculations">none</span></li>
+            <li class="pets-item"><span class="pets-item-title">Diseases: </span><span class="popap-diseases">none</span></li>
+            <li class="pets-item"><span class="pets-item-title">Parasites: </span><span class="popap-parasites">none</span></li>
+          </ul>
+          <div class="btns-card">
+            <button class="btn pets-btn update-btn">Update</button>
+            <button class="btn pets-btn delete-btn">Delete</button>
+          </div>
+          <div class="id-code"></div>
+        </div>
+        <div class="close-popap">
+          <svg class="close-svg" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M7.42618 6.00003L11.7046 1.72158C12.0985 1.32775 12.0985 0.689213 11.7046 0.295433C11.3108 -0.0984027 10.6723 -0.0984027 10.2785 0.295433L5.99998 4.57394L1.72148 0.295377C1.32765 -0.098459 0.68917 -0.098459 0.295334 0.295377C-0.0984448 0.689213 -0.0984448 1.32775 0.295334 1.72153L4.57383 5.99997L0.295334 10.2785C-0.0984448 10.6723 -0.0984448 11.3108 0.295334 11.7046C0.68917 12.0985 1.32765 12.0985 1.72148 11.7046L5.99998 7.42612L10.2785 11.7046C10.6723 12.0985 11.3108 12.0985 11.7046 11.7046C12.0985 11.3108 12.0985 10.6723 11.7046 10.2785L7.42618 6.00003Z" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="add-popap">
+    <div class="popap-window">
+      <form class="add-form" action="#" method="">
+        <div class="form-wrapper">
+          <label>Pet name</label>
+          <input id="add-name" class="form-input" type="text" name="name" placeholder="Pet name">
+          <span></span>
+        </div>
+        <div class="form-wrapper">
+          <label>Type</label>
+          <input id="add-type" class="form-input" type="text" name="type" placeholder="Type">
+          <span></span>
+        </div>
+        <div class="form-wrapper">
+          <label>Breed</label>
+          <input id="add-breed" class="form-input" type="text" name="breed" placeholder="Breed">
+          <span></span>
+        </div>
+        <div class="form-wrapper">
+          <label>Description</label>
+          <input id="add-description" class="form-input" type="text" name="description" placeholder="Description">
+          <span></span>
+        </div>
+        <div class="form-wrapper">
+          <label>Age</label>
+          <input id="add-age" class="form-input" type="text" name="age" placeholder="Age">
+          <span></span>
+        </div>
+        <div class="form-wrapper">
+          <label>Inoculations</label>
+          <input id="add-inoculations" class="form-input" type="text" name="inoculations" placeholder="Inoculations">
+          <span></span>
+        </div>
+        <div class="form-wrapper">
+          <label>Diseases</label>
+          <input id="add-diseases" class="form-input" type="text" name="diseases" placeholder="Diseases">
+          <span></span>
+        </div>
+        <div class="form-wrapper">
+          <label>Parasites</label>
+          <input id="add-parasites" class="form-input" type="text" name="parasites" placeholder="Parasites">
+          <span></span>
+        </div>
+        <div class="form-wrapper">
+          <label>Photo</label>
+          <input id="add-file" class="form-input" type="file" name="file" placeholder="File">
+          <span></span>
+        </div>
+        <div class="add-btns">
+          <button class="btn" id="add-pet-btn">Add</button>
+          <button class="btn" id="close-btn">Close</button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <div class="update-popap">
+    <div class="popap-window">
+      <form class="update-form" action="#" method="">
+        <div class="form-wrapper">
+          <label>Pet name</label>
+          <input id="form-name" class="form-input" type="text" name="name" placeholder="Pet name">
+          <span></span>
+        </div>
+        <div class="form-wrapper">
+          <label>Type</label>
+          <input id="form-type" class="form-input" type="text" name="type" placeholder="Type">
+          <span></span>
+        </div>
+        <div class="form-wrapper">
+          <label>Breed</label>
+          <input id="form-breed" class="form-input" type="text" name="breed" placeholder="Breed">
+          <span></span>
+        </div>
+        <div class="form-wrapper">
+          <label>Description</label>
+          <input id="form-description" class="form-input" type="text" name="description" placeholder="Description">
+          <span></span>
+        </div>
+        <div class="form-wrapper">
+          <label>Age</label>
+          <input id="form-age" class="form-input" type="text" name="age" placeholder="Age">
+          <span></span>
+        </div>
+        <div class="form-wrapper">
+          <label>Inoculations</label>
+          <input id="form-inoculations" class="form-input" type="text" name="inoculations" placeholder="Inoculations">
+          <span></span>
+        </div>
+        <div class="form-wrapper">
+          <label>Diseases</label>
+          <input id="form-diseases" class="form-input" type="text" name="diseases" placeholder="Diseases">
+          <span></span>
+        </div>
+        <div class="form-wrapper">
+          <label>Parasites</label>
+          <input id="form-parasites" class="form-input" type="text" name="parasites" placeholder="Parasites">
+          <span></span>
+        </div>
+        <div class="form-wrapper">
+          <label>Photo</label>
+          <input id="form-file" class="form-input" type="file" name="file" placeholder="File">
+          <span></span>
+        </div>
+        <div class="update-btns">
+          <button class="btn" id="update-pet-btn">Update</button>
+          <button class="btn" id="update-close-btn">Close</button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
