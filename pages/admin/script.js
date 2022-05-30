@@ -1,4 +1,6 @@
-import {validationForm, resetForm, validationFormAdmin} from '../../modules/validation.js'
+import {resetForm, validationFormAdmin} from '../../modules/validation.js'
+import {addSkeleton} from '../../modules/skeleton.js'
+import {createPageBlock} from '../../modules/pagination.js'
 
 // -------------  cards  -------------
 let url = 'https://it-academy-js-api-zmicerboksha.vercel.app/api/4/po/pets'
@@ -12,6 +14,7 @@ const activeCollection = document.querySelector('.active-collection')
 const inactiveCollection = document.querySelector('.inactive-collection')
 const petStatus = document.querySelector('.pet-status')
 let totalPages
+let page = 1
 
 let startIndex = 0
 let endIndex
@@ -34,12 +37,13 @@ if(window.innerWidth < 520) {
 
 generatePage(url)
 endIndex = startIndex + numberCard
+addSkeleton(startIndex, endIndex, friendsList)
 generateCard(url, startIndex, endIndex)
 
 
 window.addEventListener("resize", () => {
   const oldNumberCard = numberCard
-
+  const oldResizePage = resizePageBlock
   if(window.innerWidth >= 1280) {
     numberCard = 8
   }
@@ -53,12 +57,16 @@ window.addEventListener("resize", () => {
   if(window.innerWidth < 520) {
     resizePageBlock = true
   }
-  endIndex = numberCard
   if (oldNumberCard !== numberCard) {
     friendsList.innerHTML = ''
     startIndex = 0
     endIndex = numberCard
+    addSkeleton(startIndex, endIndex, friendsList)
     generateCard(url, startIndex, endIndex)
+    friendsPages.textContent = ""
+    generatePage(url)
+  }
+  if (oldResizePage !== resizePageBlock) {
     friendsPages.textContent = ""
     generatePage(url)
   }
@@ -72,6 +80,7 @@ async function generateCard(url, startIndex, endIndex) {
   if(numberPets < endIndex) {
     endIndex = numberPets
   }
+  friendsList.innerHTML = ''
   for(let i = startIndex; i < endIndex; i++) {
     const friendsItem = document.createElement('div')
     friendsItem.classList.add('friends-item')
@@ -100,113 +109,41 @@ async function generateCard(url, startIndex, endIndex) {
     id.textContent = data[i].id
     friendsItem.appendChild(id)
   }
-
 }
+
 
 async function generatePage(url) {
   let response = fetch(url)
                       .then(res => res.json())
   let data = await response
   totalPages = Math.ceil(data.length / numberCard)
-
-  createPageBlock(totalPages, 1)
-
+  createPageBlock(totalPages, 1, resizePageBlock, friendsPages, curPage)
 }
 
-
-let page = 1
-
-function createPageBlock(totalPages, page) {
-  let elemPage = ''
-  let activePage
-
-  let beforePages = page - 1
-  let afterPages = page + 1
-  let impossibleBtn
-
-  if(page === 1) {
-    impossibleBtn = 'impossible'
-  } else {
-    impossibleBtn = ''
-  }
-
-  elemPage += `<h4 class="start-page circle ${impossibleBtn}" >&lt;&lt;</h4>`
-  if(page > 1) {
-    elemPage += `<h4 class="previous-page circle ${impossibleBtn}">&lt;</h4>`
-  } else {
-    elemPage += `<h4 class="previous-page circle ${impossibleBtn}">&lt;</h4>`
-  }
-
-
-  if(page == totalPages && beforePages > 0) {
-    beforePages = beforePages - 1
-  }
-
-  if(page == 1) {
-    afterPages = afterPages + 1
-  }
-
-  if(resizePageBlock === false) {
-    for(let pageLength = beforePages; pageLength <= afterPages; pageLength++) {
-      if (pageLength > totalPages) {
-        continue
-      }
-      if(pageLength == 0) {
-        pageLength = pageLength + 1
-      }
-      if(page == pageLength) {
-        activePage = 'active-page'
-      } else {
-        activePage = ''
-      }
-      elemPage +=  `<h4 class="current-page circle ${activePage}">${pageLength}</h4>`
-    }
-  } else {
-    elemPage +=  `<h4 class="current-page circle active-page">${page}</h4>`
-  }
-
-  if(page === totalPages) {
-    impossibleBtn = 'impossible'
-  } else {
-    impossibleBtn = ''
-  }
-
-  if(page < totalPages) {
-    elemPage += `<h4 class="next-page circle ${impossibleBtn}">&gt;</h4>`
-  } else {
-    elemPage += `<h4 class="next-page circle ${impossibleBtn}">&gt;</h4>`
-  }
-  elemPage += `<h4 class="end-page circle ${impossibleBtn}">&gt;&gt;</h4>`
-
-  friendsPages.innerHTML = elemPage
-  curPage = page
-  console.log(curPage)
-}
 
 function createCardBlock(page) {
   friendsList.innerHTML = ''
   startIndex = page * numberCard - numberCard
   endIndex = page * numberCard
+  addSkeleton(startIndex, endIndex, friendsList)
   generateCard(url, startIndex, endIndex)
 }
 
 friendsPages.addEventListener('click', (e) => {
   if(e.target.classList.contains('current-page')) {
     page = +e.target.textContent
-    createPageBlock(totalPages, page)
+    createPageBlock(totalPages, page, resizePageBlock, friendsPages, curPage)
     createCardBlock(page)
     curPage = page
-  console.log(curPage)
   }
 })
 
 friendsPages.addEventListener('click', (e) => {
   if(e.target.classList.contains('end-page')) {
     page = totalPages
-    createPageBlock(totalPages, page)
+    createPageBlock(totalPages, page, resizePageBlock, friendsPages, curPage)
     createCardBlock(page)
     curPage = page
-  console.log(curPage)
   }
 })
 
@@ -215,20 +152,18 @@ friendsPages.addEventListener('click', (e) => {
     if(page < totalPages) {
       page = page + 1
     }
-    createPageBlock(totalPages, page)
+    createPageBlock(totalPages, page, resizePageBlock, friendsPages, curPage)
     createCardBlock(page)
     curPage = page
-  console.log(curPage)
   }
 })
 
 friendsPages.addEventListener('click', (e) => {
   if(e.target.classList.contains('start-page')) {
     page = 1
-    createPageBlock(totalPages, page)
+    createPageBlock(totalPages, page, resizePageBlock, friendsPages, curPage)
     createCardBlock(page)
     curPage = page
-  console.log(curPage)
   }
 })
 
@@ -237,10 +172,9 @@ friendsPages.addEventListener('click', (e) => {
     if(page > 1) {
       page = page - 1
     }
-    createPageBlock(totalPages, page)
+    createPageBlock(totalPages, page, resizePageBlock, friendsPages, curPage)
     createCardBlock(page)
     curPage = page
-  console.log(curPage)
   }
 })
 
@@ -255,7 +189,6 @@ petStatus.addEventListener('click', (e) => {
 })
 
 
-
 function changeCollection(item) {
   let filter
   if(item === activeCollection) {
@@ -266,6 +199,7 @@ function changeCollection(item) {
   item.addEventListener('click', () => {
     friendsList.textContent = ''
     url = `https://it-academy-js-api-zmicerboksha.vercel.app/api/4/po/pets?active=${filter}`
+    addSkeleton(startIndex, endIndex, friendsList)
     generateFilterElement(url)
     friendsPages.textContent = ""
     generatePage(url)
@@ -280,7 +214,6 @@ changeCollection(inactiveCollection)
 
 const popap = document.querySelector('.pets-popap');
 const closePopap = document.querySelector('.close-popap');
-const friendsBtn = document.querySelectorAll('.friends-btn');
 const popapImg = document.querySelector('.popap-img');
 const popapTitle = document.querySelector('.pets-name');
 const petBreed = document.querySelector('.pets-breed');
@@ -315,11 +248,16 @@ friendsList.addEventListener('click', (e) => {
 })
 
 async function generatePopap(petId) {
-  url = 'https://it-academy-js-api-zmicerboksha.vercel.app/api/4/po/pets'
+  if(activeCollection.classList.contains('active-status')) {
+    url = 'https://it-academy-js-api-zmicerboksha.vercel.app/api/4/po/pets'
+  } else {
+    url = `https://it-academy-js-api-zmicerboksha.vercel.app/api/4/po/pets?active=false`
+  }
   const response = fetch(url)
       .then(res => res.json())
   const data = await response
   const curPet = data.find(item => item.id === petId)
+  console.log(curPet)
   if (curPet.imgLink) {
     popapImg.src = curPet.imgLink
   } else {
@@ -334,7 +272,6 @@ async function generatePopap(petId) {
   popapDiseases.innerText = curPet.diseases
   popapParasites.innerText = curPet.parasites
   idCode.textContent = curPet.id
-
 }
 
 // -------------- add-popap ------------
@@ -350,11 +287,6 @@ const updateBtn = document.querySelector('.update-btn')
 const addName = document.querySelector('#add-name')
 const addType = document.querySelector('#add-type')
 const addBreed = document.querySelector('#add-breed')
-const addDescription = document.querySelector('#add-description')
-const addAge = document.querySelector('#add-age')
-const addInoculations = document.querySelector('#add-inoculations')
-const addDiseases = document.querySelector('#add-diseases')
-const addParasites = document.querySelector('#add-parasites')
 const addFile = document.querySelector('#add-file')
 const updatePopap = document.querySelector('.update-popap')
 const updatePetBtn = document.querySelector('#update-pet-btn')
@@ -374,14 +306,6 @@ let id
 addBtn.addEventListener('click', () => {
   addPopap.classList.add('popap-active')
   document.body.classList.toggle('hidden')
-  // addName.value = ''
-  // addType.value = ''
-  // addBreed.value = ''
-  // addDescription.value = ''
-  // addAge.value = ''
-  // addInoculations.value = ''
-  // addDiseases.value = ''
-  // addParasites.value = ''
   resetForm(formInput)
 })
 
@@ -418,11 +342,15 @@ async function addNewPet() {
   friendsList.textContent = ''
   startIndex = 0
   endIndex = numberCard
-  console.log(url)
+  addSkeleton(startIndex, endIndex, friendsList)
   url = 'https://it-academy-js-api-zmicerboksha.vercel.app/api/4/po/pets'
   generateCard(url, startIndex, endIndex)
   friendsPages.textContent = ""
   generatePage(url)
+  petCollection.forEach(item => {
+    item.classList.remove('active-status')
+  })
+  activeCollection.classList.add('active-status')
 }
 
 async function deletePet(id) {
@@ -435,8 +363,14 @@ async function deletePet(id) {
   friendsList.textContent = ''
   startIndex = 0
   endIndex = numberCard
-  url = 'https://it-academy-js-api-zmicerboksha.vercel.app/api/4/po/pets'
-  generateCard(url, startIndex, endIndex)
+  addSkeleton(startIndex, endIndex, friendsList)
+  if(activeCollection.classList.contains('active-status')) {
+    url = 'https://it-academy-js-api-zmicerboksha.vercel.app/api/4/po/pets'
+    generateCard(url, startIndex, endIndex)
+  } else {
+    url = `https://it-academy-js-api-zmicerboksha.vercel.app/api/4/po/pets?active=false`
+    generateFilterElement(url)
+  }
   friendsPages.textContent = ""
   generatePage(url)
 }
@@ -536,9 +470,7 @@ updatePetBtn.addEventListener('click', (e) => {
     }
     setUpdateInfo(id, formData)
     closeUpdatePopap()
-
 })
-
 
 
 // --------------- filter ----------
@@ -549,8 +481,6 @@ const listBreed = document.querySelector('.list-breed')
 const filterList = document.querySelectorAll('.filter-list')
 const btnReset = document.querySelector('.btn-reset')
 const arrType = []
-
-
 
 async function generateFilter() {
   let response = fetch(url)
@@ -589,7 +519,6 @@ async function generateFilter() {
     item.textContent = el
     listType.appendChild(item)
   })
-
 }
 
 generateFilter()
@@ -620,8 +549,6 @@ async function generateFilterElement(url) {
   generateCard(url, startIndex, endIndex)
 }
 
-
-
 filterList.forEach(item => {
   item.addEventListener('click', (e) => {
     const text = e.target.textContent
@@ -639,10 +566,9 @@ filterList.forEach(item => {
           url += `&type=${urlText}`
         }
       }
-      console.log(url)
 
       friendsList.textContent = ''
-
+      addSkeleton(startIndex, endIndex, friendsList)
       generateFilterElement(url)
       friendsPages.textContent = ""
       generatePage(url)
@@ -663,13 +589,11 @@ filterList.forEach(item => {
         }
       }
 
-      console.log(url)
-
       friendsList.textContent = ''
+      addSkeleton(startIndex, endIndex, friendsList)
       generateFilterElement(url)
       friendsPages.textContent = ""
       generatePage(url)
-
 
       const currentBreed = document.querySelector('.current-filter-breed')
       displayFilterValue(currentBreed, 'current-filter-breed', text)
@@ -681,14 +605,19 @@ filterList.forEach(item => {
 btnReset.addEventListener('click', () => {
   btnReset.classList.remove('btn-visible')
   currentFilterBlock.textContent = ''
-  url = 'https://it-academy-js-api-zmicerboksha.vercel.app/api/4/po/pets'
   friendsList.textContent = ''
   startIndex = 0
   endIndex = numberCard
-  generateCard(url, startIndex, endIndex)
+  addSkeleton(startIndex, endIndex, friendsList)
+  if(activeCollection.classList.contains('active-status')) {
+    url = 'https://it-academy-js-api-zmicerboksha.vercel.app/api/4/po/pets'
+    generateCard(url, startIndex, endIndex)
+  } else {
+    url = `https://it-academy-js-api-zmicerboksha.vercel.app/api/4/po/pets?active=false`
+    generateFilterElement(url)
+  }
+
   friendsPages.textContent = ""
   generatePage(url)
-
 })
-
 

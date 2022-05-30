@@ -170,7 +170,7 @@ a {
 
 .friends-container {
   padding-top: 80px;
-  padding-bottom: 99px;
+  /* padding-bottom: 99px; */
 }
 
 .filter-container {
@@ -311,6 +311,28 @@ a {
   color: #545454;
 }
 
+.skeleton::before {
+  content: '';
+  width: 270px;
+  height: 453px;
+  display: inline-block;
+  background: #f0edeb linear-gradient(100deg, hsla(0, 0%, 100%, 0), hsla(0, 0%, 100%, 0.5) 50%, hsla(0, 0%, 100%, 0) 80%) no-repeat -100% 0;
+  background-size: 60% 100%;
+  box-shadow: none;
+  animation: loading 1.5s ease infinite;
+  border-radius: 3px;
+}
+
+@keyframes loading {
+  0% {
+      background-position: -100% 0;
+  }
+
+  100% {
+      background-position: 500% 0;
+  }
+}
+
 .friends-list {
   padding-top: 30px;
   display: flex;
@@ -333,7 +355,6 @@ a {
 
 .friends-item:hover {
   box-shadow: 0px 2px 35px 14px rgb(13 13 13 / 4%);
-
 }
 
 .friends-item:hover .friends-btn{
@@ -370,7 +391,10 @@ a {
 }
 
 .friends-pages {
-  padding-top: 60px;
+  padding-top: 45px;
+  padding-bottom: 152px;
+  width: 100%;
+  height: 52px;
   display: flex;
   justify-content: center;
   gap: 20px;
@@ -830,16 +854,13 @@ a {
     padding: 0 30px;
   }
 
-  .friends-container {
-    padding-bottom: 77px;
-  }
-
   .friends-list {
     padding-top: 29px;
   }
 
   .friends-pages {
-    padding-top: 68px;
+    padding-top: 40px;
+    padding-bottom: 128px;
   }
 
   .footer-container {
@@ -979,6 +1000,10 @@ a {
     min-width: 240px;
   }
 
+  .filter-container {
+    column-gap: 90px;
+  }
+
   .filter-container-results {
     justify-content: center;
   }
@@ -989,7 +1014,6 @@ a {
 
   .friends-container {
     padding-top: 42px;
-    padding-bottom: 42px;
   }
 
   .friends-list {
@@ -1002,7 +1026,7 @@ a {
 
   .friends-pages {
     gap: 10px;
-    padding-top: 83px;
+    padding-bottom: 94px;
   }
 
   .filter-container-elements,

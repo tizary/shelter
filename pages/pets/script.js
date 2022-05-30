@@ -1,4 +1,6 @@
 import {validationForm, resetForm} from '../../modules/validation.js'
+import {addSkeleton} from '../../modules/skeleton.js'
+import {createPageBlock} from '../../modules/pagination.js'
 
 // -------- burger menu -------
 
@@ -18,7 +20,6 @@ linkOpen.addEventListener('click', (e) => {
     modal.classList.add('modal-close');
     modalOpen.classList.toggle('burger-active');
   }
-
 });
 
 // -------------  cards  -------------
@@ -28,10 +29,10 @@ let numberCard
 const friendsList = document.querySelector('.friends-list')
 const friendsPages = document.querySelector('.friends-pages')
 let totalPages
+let page = 1
 
 let startIndex = 0
 let endIndex
-
 let resizePageBlock = false
 
 if(window.innerWidth >= 1280) {
@@ -49,12 +50,13 @@ if(window.innerWidth < 520) {
 
 generatePage(url)
 endIndex = startIndex + numberCard
+addSkeleton(startIndex, endIndex, friendsList)
 generateCard(url, startIndex, endIndex)
 
 
 window.addEventListener("resize", () => {
   const oldNumberCard = numberCard
-
+  const oldResizePage = resizePageBlock
   if(window.innerWidth >= 1280) {
     numberCard = 8
   }
@@ -68,25 +70,30 @@ window.addEventListener("resize", () => {
   if(window.innerWidth < 520) {
     resizePageBlock = true
   }
-  endIndex = numberCard
   if (oldNumberCard !== numberCard) {
     friendsList.innerHTML = ''
     startIndex = 0
     endIndex = numberCard
+    addSkeleton(startIndex, endIndex, friendsList)
     generateCard(url, startIndex, endIndex)
+    friendsPages.textContent = ""
+    generatePage(url)
+  }
+  if (oldResizePage !== resizePageBlock) {
     friendsPages.textContent = ""
     generatePage(url)
   }
 });
 
 async function generateCard(url, startIndex, endIndex) {
-  let response = fetch(url)
-                      .then(res => res.json())
-  let data = await response
+  const response = fetch(url)
+                    .then(res => res.json())
+  const data = await response
   numberPets = data.length
   if(numberPets < endIndex) {
     endIndex = numberPets
   }
+  friendsList.innerHTML = ''
   for(let i = startIndex; i < endIndex; i++) {
     const friendsItem = document.createElement('div')
     friendsItem.classList.add('friends-item')
@@ -119,91 +126,22 @@ async function generatePage(url) {
   let response = fetch(url)
                       .then(res => res.json())
   let data = await response
-  console.log(data)
   totalPages = Math.ceil(data.length / numberCard)
-
-  createPageBlock(totalPages, 1)
-}
-
-
-  let page = 1
-
-function createPageBlock(totalPages, page) {
-  let elemPage = ''
-  let activePage
-
-  let beforePages = page - 1
-  let afterPages = page + 1
-  let impossibleBtn
-
-  if(page === 1) {
-    impossibleBtn = 'impossible'
-  } else {
-    impossibleBtn = ''
-  }
-
-  elemPage += `<h4 class="start-page circle ${impossibleBtn}" >&lt;&lt;</h4>`
-  if(page > 1) {
-    elemPage += `<h4 class="previous-page circle ${impossibleBtn}">&lt;</h4>`
-  } else {
-    elemPage += `<h4 class="previous-page circle ${impossibleBtn}">&lt;</h4>`
-  }
-
-
-  if(page == totalPages && beforePages > 0) {
-    beforePages = beforePages - 1
-  }
-
-  if(page == 1) {
-    afterPages = afterPages + 1
-  }
-
-  if(resizePageBlock === false) {
-    for(let pageLength = beforePages; pageLength <= afterPages; pageLength++) {
-      if (pageLength > totalPages) {
-        continue
-      }
-      if(pageLength == 0) {
-        pageLength = pageLength + 1
-      }
-      if(page == pageLength) {
-        activePage = 'active-page'
-      } else {
-        activePage = ''
-      }
-      elemPage +=  `<h4 class="current-page circle ${activePage}">${pageLength}</h4>`
-    }
-  } else {
-    elemPage +=  `<h4 class="current-page circle active-page">${page}</h4>`
-  }
-
-  if(page === totalPages) {
-    impossibleBtn = 'impossible'
-  } else {
-    impossibleBtn = ''
-  }
-
-  if(page < totalPages) {
-    elemPage += `<h4 class="next-page circle ${impossibleBtn}">&gt;</h4>`
-  } else {
-    elemPage += `<h4 class="next-page circle ${impossibleBtn}">&gt;</h4>`
-  }
-  elemPage += `<h4 class="end-page circle ${impossibleBtn}">&gt;&gt;</h4>`
-
-  friendsPages.innerHTML = elemPage
+  createPageBlock(totalPages, 1, resizePageBlock, friendsPages)
 }
 
 function createCardBlock(page) {
   friendsList.innerHTML = ''
   startIndex = page * numberCard - numberCard
   endIndex = page * numberCard
+  addSkeleton(startIndex, endIndex, friendsList)
   generateCard(url, startIndex, endIndex)
 }
 
 friendsPages.addEventListener('click', (e) => {
   if(e.target.classList.contains('current-page')) {
     page = +e.target.textContent
-    createPageBlock(totalPages, page)
+    createPageBlock(totalPages, page, resizePageBlock, friendsPages)
     createCardBlock(page)
   }
 })
@@ -211,7 +149,7 @@ friendsPages.addEventListener('click', (e) => {
 friendsPages.addEventListener('click', (e) => {
   if(e.target.classList.contains('end-page')) {
     page = totalPages
-    createPageBlock(totalPages, page)
+    createPageBlock(totalPages, page, resizePageBlock, friendsPages)
     createCardBlock(page)
   }
 })
@@ -221,7 +159,7 @@ friendsPages.addEventListener('click', (e) => {
     if(page < totalPages) {
       page = page + 1
     }
-    createPageBlock(totalPages, page)
+    createPageBlock(totalPages, page, resizePageBlock, friendsPages)
     createCardBlock(page)
   }
 })
@@ -229,7 +167,7 @@ friendsPages.addEventListener('click', (e) => {
 friendsPages.addEventListener('click', (e) => {
   if(e.target.classList.contains('start-page')) {
     page = 1
-    createPageBlock(totalPages, page)
+    createPageBlock(totalPages, page, resizePageBlock, friendsPages)
     createCardBlock(page)
   }
 })
@@ -239,7 +177,7 @@ friendsPages.addEventListener('click', (e) => {
     if(page > 1) {
       page = page - 1
     }
-    createPageBlock(totalPages, page)
+    createPageBlock(totalPages, page, resizePageBlock, friendsPages)
     createCardBlock(page)
   }
 })
@@ -347,6 +285,7 @@ async function setClient(id, info) {
   friendsList.innerHTML = ''
   startIndex = 0
   endIndex = numberCard
+  addSkeleton(startIndex, endIndex, friendsList)
   url = 'https://it-academy-js-api-zmicerboksha.vercel.app/api/4/po/pets'
   generateCard(url, startIndex, endIndex)
   friendsPages.textContent = ""
@@ -429,7 +368,6 @@ async function generateFilter() {
     item.textContent = el
     listType.appendChild(item)
   })
-
 }
 
 generateFilter()
@@ -447,9 +385,9 @@ function displayFilterValue(value, classItem, text) {
 }
 
 async function generateFilterElement(url) {
-  let response = fetch(url)
+  const response = fetch(url)
       .then(res => res.json())
-  let data = await response
+  const data = await response
 
   startIndex = 0
   if((data.length) < numberCard) {
@@ -478,11 +416,10 @@ filterList.forEach(item => {
           url += `&type=${urlText}`
         }
       }
-      console.log(url)
 
       friendsList.textContent = ''
       friendsPages.textContent = ''
-
+      addSkeleton(startIndex, endIndex, friendsList)
       generateFilterElement(url)
       generatePage(url)
 
@@ -502,10 +439,9 @@ filterList.forEach(item => {
         }
       }
 
-      console.log(url)
-
       friendsList.textContent = ''
       friendsPages.textContent = ""
+      addSkeleton(startIndex, endIndex, friendsList)
       generateFilterElement(url)
       generatePage(url)
 
@@ -523,6 +459,7 @@ btnReset.addEventListener('click', () => {
   friendsList.textContent = ''
   startIndex = 0
   endIndex = numberCard
+  addSkeleton(startIndex, endIndex, friendsList)
   generateCard(url, startIndex, endIndex)
   friendsPages.textContent = ""
   generatePage(url)
