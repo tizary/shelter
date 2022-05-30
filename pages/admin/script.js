@@ -1,15 +1,11 @@
+import {validationForm, resetForm, validationFormAdmin} from '../../modules/validation.js'
 
 // -------------  cards  -------------
 let url = 'https://it-academy-js-api-zmicerboksha.vercel.app/api/4/po/pets'
-let numberPage
 let numberPets
 let numberCard
-const nextPage = document.querySelector('.next-page')
-const endPage = document.querySelector('.end-page')
 const friendsList = document.querySelector('.friends-list')
 const friendsPages = document.querySelector('.friends-pages')
-const startPage = document.querySelector('.start-page')
-const previousPage = document.querySelector('.previous-page')
 const idCode = document.querySelector('.id-code')
 const petCollection = document.querySelectorAll('.pet-collection')
 const activeCollection = document.querySelector('.active-collection')
@@ -293,7 +289,7 @@ const popapAge = document.querySelector('.popap-age');
 const popapInoculations = document.querySelector('.popap-inoculations');
 const popapDiseases = document.querySelector('.popap-diseases');
 const popapParasites = document.querySelector('.popap-parasites');
-
+// let petId
 
 function closePopapWindow() {
   popap.classList.toggle('popap-active')
@@ -311,7 +307,7 @@ popap.addEventListener('mousedown', (e) => {
 friendsList.addEventListener('click', (e) => {
   if(e.target.classList.contains('friends-btn')) {
     closePopapWindow()
-    petId = +e.target.nextSibling.textContent
+    const petId = +e.target.nextSibling.textContent
     popapImg.src = ''
     popapTitle.textContent = ''
     generatePopap(petId)
@@ -319,6 +315,7 @@ friendsList.addEventListener('click', (e) => {
 })
 
 async function generatePopap(petId) {
+  url = 'https://it-academy-js-api-zmicerboksha.vercel.app/api/4/po/pets'
   const response = fetch(url)
       .then(res => res.json())
   const data = await response
@@ -344,7 +341,7 @@ async function generatePopap(petId) {
 
 const addPopap = document.querySelector('.add-popap')
 const addBtn = document.querySelector('.add-btn')
-const btnsUpdate = document.querySelector('.update-btns')
+const formInput = document.querySelectorAll('.form-input')
 const form = document.querySelector('.add-form')
 const addPetBtn = document.querySelector('#add-pet-btn')
 const closeBtn = document.querySelector('#close-btn')
@@ -372,20 +369,20 @@ const formDiseases = document.querySelector('#form-diseases')
 const formParasites = document.querySelector('#form-parasites')
 const formFile = document.querySelector('#form-file')
 const updateCloseBtn = document.querySelector('#update-close-btn')
-
 let id
 
 addBtn.addEventListener('click', () => {
   addPopap.classList.add('popap-active')
   document.body.classList.toggle('hidden')
-  addName.value = ''
-  addType.value = ''
-  addBreed.value = ''
-  addDescription.value = ''
-  addAge.value = ''
-  addInoculations.value = ''
-  addDiseases.value = ''
-  addParasites.value = ''
+  // addName.value = ''
+  // addType.value = ''
+  // addBreed.value = ''
+  // addDescription.value = ''
+  // addAge.value = ''
+  // addInoculations.value = ''
+  // addDiseases.value = ''
+  // addParasites.value = ''
+  resetForm(formInput)
 })
 
 function closeAddPopap() {
@@ -446,9 +443,31 @@ async function deletePet(id) {
 
 addPetBtn.addEventListener('click', (e) => {
   e.preventDefault()
-  addNewPet()
-  closeAddPopap()
+  const error = 'Field is empty'
+  if(addName.value !== '' && addType.value !== '' && addBreed.value !== '' && addFile.value !== '') {
+    addNewPet()
+    closeAddPopap()
+  } else {
+    if(addName.value === '') {
+      addName.nextElementSibling.textContent = error
+      addName.style.borderColor = 'red'
+    }
+    if(addType.value === '') {
+      addType.nextElementSibling.textContent = error
+      addType.style.borderColor = 'red'
+    }
+    if(addBreed.value === '') {
+      addBreed.nextElementSibling.textContent = error
+      addBreed.style.borderColor = 'red'
+    }
+    if(addFile.value === '') {
+      addFile.nextElementSibling.textContent = error
+      addFile.style.borderColor = 'red'
+    }
+  }
 })
+
+validationFormAdmin(addName, addType, addBreed, addFile)
 
 closeBtn.addEventListener('click', (e) => {
   e.preventDefault()
@@ -499,14 +518,6 @@ async function setUpdateInfo(id, info) {
     body: info
   })
   const data = await response
-
-  friendsList.textContent = ''
-  startIndex = 0
-  endIndex = numberCard
-  url = 'https://it-academy-js-api-zmicerboksha.vercel.app/api/4/po/pets'
-  generateCard(url, startIndex, endIndex)
-  friendsPages.textContent = ""
-  generatePage(url)
 }
 
 updatePetBtn.addEventListener('click', (e) => {
@@ -523,7 +534,6 @@ updatePetBtn.addEventListener('click', (e) => {
     if(formFile.files.length === 1) {
       formData = new FormData(updateForm)
     }
-
     setUpdateInfo(id, formData)
     closeUpdatePopap()
 

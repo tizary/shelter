@@ -1,4 +1,4 @@
-import {validationForm} from '../../modules/validation.js'
+import {validationForm, resetForm} from '../../modules/validation.js'
 
 const adminName = 'admin'
 const adminPassword = 'admin'
@@ -307,22 +307,26 @@ async function setClient(id, info) {
 adoptPetBtn.addEventListener('click', (e) => {
   e.preventDefault()
   const error = 'Field is empty'
-  if(firstname.value === '') {
-    firstname.nextElementSibling.textContent = error
-    firstname.style.borderColor = 'red'
-  } else if(lastname.value === '') {
-    lastname.nextElementSibling.textContent = error
-    lastname.style.borderColor = 'red'
-  } else if(email.value === '') {
-    email.nextElementSibling.textContent = error
-    email.style.borderColor = 'red'
-  } else {
+  if(firstname.value !== '' && lastname.value !== '' && email.value !== '') {
     adoptInfo.adopterFirstName = firstname.value
     adoptInfo.adopterLastName = lastname.value
     adoptInfo.adopterEmail = email.value
     adoptInfo.active = false
     setClient(petCurrentId, adoptInfo)
     closeAdoptPopap()
+  } else {
+    if(firstname.value === '') {
+      firstname.nextElementSibling.textContent = error
+      firstname.style.borderColor = 'red'
+    }
+    if(lastname.value === '') {
+      lastname.nextElementSibling.textContent = error
+      lastname.style.borderColor = 'red'
+    }
+    if(email.value === '') {
+      email.nextElementSibling.textContent = error
+      email.style.borderColor = 'red'
+    }
   }
 })
 
@@ -331,9 +335,7 @@ validationForm(formInput)
 function closeAdoptPopap() {
   adoptPopap.classList.remove('popap-active')
   document.body.classList.toggle('hidden')
-  firstname.value = ''
-  lastname.value = ''
-  email.value = ''
+  resetForm(formInput)
 }
 
 adoptPopap.addEventListener('mousedown', (e) => {
@@ -361,13 +363,14 @@ loginBtn.addEventListener('click', () => {
 function closeLoginPopap() {
   loginPopap.classList.remove('popap-active')
   document.body.classList.toggle('hidden')
-  username.value = ''
-  password.value = ''
+  // username.value = ''
+  // password.value = ''
 }
 
 loginPopap.addEventListener('mousedown', (e) => {
   if(e.target.classList.contains('popap-window')) {
     closeLoginPopap()
+    resetForm(loginInput)
   }
 })
 
