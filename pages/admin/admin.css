@@ -302,6 +302,15 @@ a {
   }
 }
 
+.confirm-pet::before {
+  content: '';
+  position: absolute;
+  width: 270px;
+  height: 20px;
+  background: rgba(119, 243, 61, 0.705);
+  border-radius: 9px 9px 0 0;
+}
+
 .friends-list {
   padding-top: 30px;
   display: flex;
@@ -404,7 +413,8 @@ a {
 
 /* ------------- popap ----------- */
 
-.pets-popap {
+.pets-popap,
+.confirm-popap {
   display: none;
   width: 100%;
   height: 100%;
@@ -425,7 +435,8 @@ a {
   justify-content: flex-start;
 }
 
-.pets-card {
+.pets-card,
+.confirm-card {
   box-shadow: 0px 2px 35px 14px rgba(13, 13, 13, 0.2);
   width: 900px;
   height: 500px;
@@ -442,26 +453,30 @@ a {
   margin-bottom: 30px;
 }
 
-.img-container {
+.img-container,
+.img-confirm-container {
   width: 500px;
   display: flex;
   justify-content: center;
   border-radius: 9px 0px 0px 9px;
 }
 
-.popap-img {
+.popap-img,
+.confirm-img {
   max-width: 500px;
   height: 500px;
   border-radius: 9px 0px 0px 9px;
 }
 
-.card-info {
+.card-info,
+.confirm-info {
   width: 351px;
   height: 362px;
   margin-top: 50px;
 }
 
-.pets-name {
+.pets-name,
+.confirm-name {
   font-family: 'Georgia';
   font-weight: 400;
   letter-spacing: 0.06em;
@@ -471,7 +486,8 @@ a {
 
 }
 
-.pets-breed {
+.pets-breed,
+.confirm-breed {
   padding-top: 10px;
   font-family: 'Georgia';
   font-weight: 400;
@@ -496,7 +512,8 @@ a {
   padding-top: 40px;
 }
 
-.pets-item {
+.pets-item,
+.confirm-item {
   font-family: 'Georgia';
   font-weight: 400;
   font-size: 15px;
@@ -521,6 +538,14 @@ a {
   justify-content: space-around;
 }
 
+.confirm-btns-card {
+  margin: 40px 0;
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  row-gap: 15px;
+}
+
 .pets-btn {
   width: 150px;
   background: #F1CDB3;
@@ -533,7 +558,8 @@ a {
   background: #FDDCC4;
 }
 
-.close-popap {
+.close-popap,
+.close-confirm-popap {
   position: absolute;
   top: -52px;
   right: -45px;
@@ -547,7 +573,8 @@ a {
   transition: .3s;
 }
 
-.close-popap:hover {
+.close-popap:hover,
+.close-confirm-popap:hover {
   background: #FDDCC4;
   cursor: pointer;
   border: none;
@@ -557,12 +584,29 @@ a {
   fill: #ffffff;
 }
 
-.close-popap:hover .close-svg {
+.close-popap:hover .close-svg,
+.close-confirm-popap:hover .close-svg {
   fill: #292929;
 }
 
-.id-code {
+.id-code,
+.id-confirm {
   visibility: hidden;
+}
+
+/* -------------------- confirm-popap ----------------- */
+
+.confirm-adopter {
+  font-family: 'Georgia';
+  font-weight: 700;
+  font-size: 17px;
+  line-height: 110%;
+  letter-spacing: 0.06em;
+  padding-top: 20px;
+}
+
+.adopter-description {
+  padding-top: 15px;
 }
 
 /* ------------------ add-popap && update-popap --------------- */
@@ -711,18 +755,21 @@ a {
   }
 
 
-  .pets-card {
+  .pets-card,
+  .confirm-card {
     width: 630px;
     height: 400px;
     padding-right: 9px;
   }
 
-  .card-info {
+  .card-info,
+  .confirm-info {
     margin-top: 10px;
     width: 260px;
   }
 
-  .img-container {
+  .img-container,
+  .img-confirm-container {
     width: 350px;
     align-items: center;
   }
@@ -736,11 +783,13 @@ a {
     padding-top: 20px;
   }
 
-  .popap-img {
+  .popap-img,
+  .confirm-img {
     height: 350px;
   }
 
-  .pets-card {
+  .pets-card,
+  .confirm-card {
     height: 430px;
   }
 
@@ -808,30 +857,36 @@ a {
     margin: 0 auto;
   }
 
-  .pets-card {
+  .pets-card,
+  .confirm-card {
     justify-content: center;
     width: 240px;
     height: 460px;
     padding: 0;
   }
 
-  .img-container {
+  .img-container,
+  .img-confirm-container {
     display: none;
   }
 
-  .card-info {
+  .card-info,
+  .confirm-info {
     width: 220px;
   }
 
-  .pets-name {
+  .pets-name,
+  .confirm-name {
     text-align: center;
   }
 
-  .pets-breed {
+  .pets-breed,
+  .confirm-breed {
     text-align: center;
   }
 
-  .close-popap {
+  .close-popap,
+  .close-confirm-popap {
     right: -27px;
   }
 

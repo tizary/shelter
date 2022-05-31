@@ -215,7 +215,6 @@ friendsList.addEventListener('click', (e) => {
     popap.classList.toggle('popap-active')
     document.body.classList.toggle('hidden')
     petId = +e.target.nextSibling.textContent
-    console.log(petId)
     popapImg.src = ''
     popapTitle.textContent = ''
     generatePopap(petId)

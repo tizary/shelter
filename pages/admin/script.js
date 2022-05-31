@@ -84,6 +84,9 @@ async function generateCard(url, startIndex, endIndex) {
   for(let i = startIndex; i < endIndex; i++) {
     const friendsItem = document.createElement('div')
     friendsItem.classList.add('friends-item')
+    // if(data.confirm) {
+    //   friendsItem.classList.add('confirm-pet')
+    // }
     friendsList.appendChild(friendsItem)
     const img = document.createElement('img')
     img.classList.add('friends-img')
@@ -210,7 +213,7 @@ changeCollection(activeCollection)
 changeCollection(inactiveCollection)
 
 
-// -------------- popap ----------
+// -------------- pets-popap &&  confirm-popap----------
 
 const popap = document.querySelector('.pets-popap');
 const closePopap = document.querySelector('.close-popap');
@@ -222,6 +225,20 @@ const popapAge = document.querySelector('.popap-age');
 const popapInoculations = document.querySelector('.popap-inoculations');
 const popapDiseases = document.querySelector('.popap-diseases');
 const popapParasites = document.querySelector('.popap-parasites');
+const btnsCard = document.querySelector('.btns-card');
+const confirmPopap = document.querySelector('.confirm-popap');
+const closeConfirm = document.querySelector('.close-confirm-popap');
+const confirmImg = document.querySelector('.confirm-img');
+const confirmName = document.querySelector('.confirm-name');
+const confirmBreed = document.querySelector('.confirm-breed');
+const adopterDescription = document.querySelector('.adopter-description');
+const idConfirm = document.querySelector('.id-confirm');
+const rejectBtn = document.querySelector('.reject-btn');
+const deleteInactiveBtn = document.querySelector('.delete-inactive-btn');
+const confirmBtn = document.querySelector('.confirm-btn');
+const confirmInfoBtn = document.querySelector('.confirm-info-btn');
+const status = {}
+const confirmStatus = {}
 // let petId
 
 function closePopapWindow() {
@@ -230,6 +247,7 @@ function closePopapWindow() {
 }
 
 closePopap.addEventListener('click', closePopapWindow)
+closeConfirm.addEventListener('click', closeConfirmPopap)
 
 popap.addEventListener('mousedown', (e) => {
   if(e.target.classList.contains('popap-window')) {
@@ -237,17 +255,34 @@ popap.addEventListener('mousedown', (e) => {
   }
 })
 
+confirmPopap.addEventListener('mousedown', (e) => {
+  if(e.target.classList.contains('popap-window')) {
+    closeConfirmPopap()
+  }
+})
+
+function closeConfirmPopap() {
+  confirmPopap.classList.toggle('popap-active')
+  document.body.classList.toggle('hidden')
+}
+
 friendsList.addEventListener('click', (e) => {
   if(e.target.classList.contains('friends-btn')) {
-    closePopapWindow()
-    const petId = +e.target.nextSibling.textContent
-    popapImg.src = ''
-    popapTitle.textContent = ''
-    generatePopap(petId)
+    const petId = +e.target.nextElementSibling.textContent
+    if (activeCollection.classList.contains('active-status')) {
+      closePopapWindow()
+      popapImg.src = ''
+      popapTitle.textContent = ''
+      generatePopap(petId)
+    } else if(inactiveCollection.classList.contains('active-status')) {
+      closeConfirmPopap()
+      generateConfirmPopap(petId)
+    }
   }
 })
 
 async function generatePopap(petId) {
+  btnsCard.style.display = 'flex'
   if(activeCollection.classList.contains('active-status')) {
     url = 'https://it-academy-js-api-zmicerboksha.vercel.app/api/4/po/pets'
   } else {
@@ -257,7 +292,6 @@ async function generatePopap(petId) {
       .then(res => res.json())
   const data = await response
   const curPet = data.find(item => item.id === petId)
-  console.log(curPet)
   if (curPet.imgLink) {
     popapImg.src = curPet.imgLink
   } else {
@@ -273,6 +307,82 @@ async function generatePopap(petId) {
   popapParasites.innerText = curPet.parasites
   idCode.textContent = curPet.id
 }
+
+async function generateConfirmPopap(petId) {
+  url = `https://it-academy-js-api-zmicerboksha.vercel.app/api/4/po/pets?active=false`
+
+  const response = fetch(url)
+      .then(res => res.json())
+  const data = await response
+  const curPet = data.find(item => item.id === petId)
+  if (curPet.imgLink) {
+    confirmImg.src = curPet.imgLink
+  } else {
+    confirmImg.src = ''
+  }
+  confirmName.textContent = curPet.name
+  confirmBreed.textContent = `${curPet.type} - ${curPet.breed}`
+  adopterDescription.textContent = ''
+  const firstName = document.createElement('li')
+  firstName.classList.add('confirm-item')
+  firstName.textContent = curPet.adopterFirstName
+  const lastName = document.createElement('li')
+  lastName.classList.add('confirm-item')
+  lastName.textContent = curPet.adopterLastName
+  const email = document.createElement('li')
+  email.classList.add('confirm-item')
+  email.textContent = curPet.adopterEmail
+  adopterDescription.append(firstName, lastName, email)
+  idConfirm.textContent = curPet.id
+}
+
+deleteInactiveBtn.addEventListener('click', (e) => {
+  id = e.target.closest('div').nextElementSibling.textContent
+  deletePet(id)
+  closeConfirmPopap()
+})
+
+rejectBtn.addEventListener('click', (e) => {
+  id = e.target.closest('div').nextElementSibling.textContent
+  status.active = true
+  returnPet(id, status)
+  closeConfirmPopap()
+})
+
+async function returnPet(id, status) {
+  url = `https://it-academy-js-api-zmicerboksha.vercel.app/api/4/po/pets/${id}`
+  const response = fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(status)
+  })
+  const data = await response
+  friendsList.textContent = ''
+  startIndex = 0
+  endIndex = numberCard
+  addSkeleton(startIndex, endIndex, friendsList)
+  url = `https://it-academy-js-api-zmicerboksha.vercel.app/api/4/po/pets?active=false`
+  generateFilterElement(url)
+  friendsPages.textContent = ""
+  generatePage(url)
+}
+
+confirmInfoBtn.addEventListener('click', (e) => {
+  id = +e.target.closest('div').nextElementSibling.textContent
+  generatePopap(id)
+  closePopapWindow()
+  btnsCard.style.display = 'none'
+})
+
+// confirmBtn.addEventListener('click', () => {
+//   id = e.target.closest('div').nextElementSibling.textContent
+//   confirmStatus.confirm = true
+//   returnPet(id, confirmStatus) // в данном случае добавляет в API статус true для confirm
+//   closeConfirmPopap()
+// })
+
 
 // -------------- add-popap ------------
 

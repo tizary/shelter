@@ -24,9 +24,7 @@ modalOpen.addEventListener('click', () => {
 });
 
 logo.addEventListener('click', (e) => {
-  console.log(e.target)
   if (e.target.classList.contains('header-title')) {
-    console.log(e.target)
     closeModal();
   }
 })
@@ -56,8 +54,6 @@ const itemActive = document.querySelector("#item-active")
 
 let numberPets
 
-console.log(window.innerWidth)
-
 async function generateSlider(item, startNumber, endNumber) {
   url = 'https://it-academy-js-api-zmicerboksha.vercel.app/api/4/po/pets'
 
@@ -65,7 +61,6 @@ async function generateSlider(item, startNumber, endNumber) {
                       .then(res => res.json())
   let data = await response
   numberPets = data.length
-console.log(numberPets)
 
   for(let i=startNumber; i <= endNumber; i++) {
     const card = document.createElement('div')
