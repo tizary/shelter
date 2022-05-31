@@ -1,3 +1,3 @@
 # shelter
-login: admin
+login: admin,
 password: admin
