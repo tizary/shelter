@@ -84,9 +84,9 @@ async function generateCard(url, startIndex, endIndex) {
   for(let i = startIndex; i < endIndex; i++) {
     const friendsItem = document.createElement('div')
     friendsItem.classList.add('friends-item')
-    // if(data.confirm) {
-    //   friendsItem.classList.add('confirm-pet')
-    // }
+    if(data[i].confirm) {
+      friendsItem.classList.add('confirm-pet')
+    }
     friendsList.appendChild(friendsItem)
     const img = document.createElement('img')
     img.classList.add('friends-img')
@@ -376,12 +376,12 @@ confirmInfoBtn.addEventListener('click', (e) => {
   btnsCard.style.display = 'none'
 })
 
-// confirmBtn.addEventListener('click', () => {
-//   id = e.target.closest('div').nextElementSibling.textContent
-//   confirmStatus.confirm = true
-//   returnPet(id, confirmStatus) // в данном случае добавляет в API статус true для confirm
-//   closeConfirmPopap()
-// })
+confirmBtn.addEventListener('click', (e) => {
+  id = e.target.closest('div').nextElementSibling.textContent
+  confirmStatus.confirm = true
+  returnPet(id, confirmStatus) // в данном случае добавляет в API статус true для confirm
+  closeConfirmPopap()
+})
 
 
 // -------------- add-popap ------------
